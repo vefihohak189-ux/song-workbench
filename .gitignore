@@ -1,0 +1,8 @@
+*.db
+*.log
+__pycache__/
+.env
+.DS_Store
+out/
+sources/
+node_modules/
