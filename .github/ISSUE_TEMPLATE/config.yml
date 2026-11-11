@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question about the arrangement-diversity rule
+    url: https://github.com/vefihohak189-ux/song-workbench/discussions
+    about: Ask here; the rule is documented in the README under that heading.

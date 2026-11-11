@@ -1,0 +1,19 @@
+name: Bug report
+description: Something in the pipeline broke
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The card, the state it was in, and what you expected instead.
+    validations: {required: true}
+  - type: input
+    id: version
+    attributes:
+      label: Commit or release
+  - type: textarea
+    id: logs
+    attributes:
+      label: server.log tail
+      render: shell

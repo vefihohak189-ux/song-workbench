@@ -1,0 +1,31 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Byte-compile every module
+        run: python -m compileall -q app.py inline.py
+
+      - name: Boot the workbench and hit its API
+        run: |
+          mkdir -p "$RUNNER_TEMP/sources" "$RUNNER_TEMP/out"
+          PORT=7799 SONG_SOURCES="$RUNNER_TEMP/sources" SONG_OUT="$RUNNER_TEMP/out" \
+            python app.py > "$RUNNER_TEMP/server.log" 2>&1 &
+          for i in $(seq 1 20); do
+            sleep 0.5
+            curl -sf http://127.0.0.1:7799/api/sources && break
+          done
+          curl -sf http://127.0.0.1:7799/api/sources | python -c "import json,sys; d=json.load(sys.stdin); assert d['ok'] is True; print('sources ok')"
+          curl -sf -o /dev/null -w "index %{http_code}\n" http://127.0.0.1:7799/
+          cat "$RUNNER_TEMP/server.log"
